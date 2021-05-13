@@ -1,4 +1,5 @@
 from flask import Flask
+
 from router import route
 from config import conf
 

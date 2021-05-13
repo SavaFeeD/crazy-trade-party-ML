@@ -1,9 +1,10 @@
 import pandas as pd
 import json
+from flask import jsonify
 
 
 def err(message):
-    return json.dumps({
+    return jsonify({
         'status': False,
         'data': {
             'message': f"{message}"
