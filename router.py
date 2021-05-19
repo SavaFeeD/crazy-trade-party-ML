@@ -44,9 +44,8 @@ def route(app):
             'body': {
                 'message': "File load",
                 'filename': filename
-                }
-            })
-
+            }
+        })
 
     @app.route('/analytics/get_info_dataset', methods=['GET'])
     def get_info_for_anal():
@@ -89,8 +88,8 @@ def route(app):
                 if len(dataset.columns) > 8:
                     # big - cols, big - rows (test dataset: heart)
                     start = [float(val) for val_arr in [dataset.iloc[i].values for i in range(2)] for val in val_arr]
-                    start1 = start[:int(len(start)/2)]
-                    start2 = start[int(len(start)/2):]
+                    start1 = start[:int(len(start) / 2)]
+                    start2 = start[int(len(start) / 2):]
                     start = [start1, start2]
                     start_split = []
                     for s in start:
@@ -155,10 +154,14 @@ def route(app):
             }
         })
 
-
     @app.route('/analytics/result', methods=['POST'])
     def result():
-        dataset_name = request.form['filename']
+        data = json.loads(request.data)
+
+        dataset_name = data['filename']
+        desc = data['desc']
+        charts = data['chart']
+
         if dataset_name.strip() == '':
             return
         try:
@@ -166,13 +169,21 @@ def route(app):
         except:
             return err("Dataset not found")
 
-        print(dataset)
+        if desc:
+            describe = description(dataset, desc)
+        else:
+            describe = []
 
-        correlation(dataset)
+        if charts:
+            charts = get_charts(charts)
+        else:
+            charts = []
 
         return jsonify({
             'status': True,
             'body': {
-                'message': "Analytics ready"
+                'message': "Analytics ready",
+                'describe': describe,
+                'charts': charts
             }
         })
