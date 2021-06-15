@@ -20,45 +20,51 @@ def description(dataset, fields):
     df = dataset[fields]
 
     return {
-        "values": df.apply(pd.DataFrame.describe, axis=1).values.tolist(),
+        "values": df.describe().values.tolist(),
         "columns": df.describe().columns.tolist(),
         "index": df.describe().index.tolist()
     }
 
 
 def get_charts(dataset, charts):
-    data = []
+    data = {
+        "bars": [
+
+        ],
+        "lines": [
+
+        ],
+        "pies": [
+
+        ]
+    }
 
     for chart in charts:
-        # if chart.type == 'line':
-        #     labels = dataset[charts.data.x]
-        #     dataset_labels = f'{charts.data.x}/{charts.data.y}'
-        #     dataset_data = dataset[charts.data.y]
-        #
-        #     chart = {
-        #         'labels': labels,
-        #         'datasets': {
-        #             'labels': dataset_labels,
-        #             'data': dataset_data
-        #         }
-        #     }
-        #     data.append(chart)
-        # else:
-        for col_chart in chart.data:
-            df = dataset[col_chart]
-            print(Counter(df))
+        # if chart['type'] == 'bar' or chart['type'] == 'line':
+        pack = []
+        labels = np.array([])
 
-            labels = []
-            dataset_labels = chart.type
-            dataset_data = []
+        for col_chart in chart['data']:
+            df = dataset[col_chart]
+
+            count = dict(Counter(df))
+            label = col_chart
+            dataset_data = list(count.values())
 
             chart = {
-                'labels': labels,
-                'datasets': {
-                    'labels': dataset_labels,
-                    'data': dataset_data
-                }
+                'label': label,
+                'data': dataset_data,
+                'borderWidth': 1
             }
-            data.append(chart)
+            labels = np.append(labels, np.array(list(count.keys())))
+            pack.append(chart)
+
+        all = {
+            "labels": list(set(labels.tolist())),
+            "datasets": pack,
+        }
+        chart['type'].append(all)
+        # else:
+        #     print('other')
 
     return data

@@ -158,7 +158,7 @@ def route(app):
     def result():
         data = json.loads(request.data)
 
-        dataset_name = data['filename']
+        dataset_name = data['file']
         desc = data['desc']
         charts = data['chart']
 
@@ -175,7 +175,8 @@ def route(app):
             describe = []
 
         if charts:
-            charts = get_charts(charts)
+            print(dataset)
+            charts = get_charts(dataset, charts)
         else:
             charts = []
 
